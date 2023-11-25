@@ -8,8 +8,7 @@ import axios from "axios";
 export default function Home() {
   const [token, setToken] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [number, setNumber] = useState(9);
-  const [results, setResults] = useState([]);
+  const [result, setResult] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -18,9 +17,9 @@ export default function Home() {
       setError(false);
       setLoading(true);
       axios
-        .post(`/api/images?t=${token}&p=${prompt}&n=${number}`)
+        .post(`/api/images?t=${token}&p=${prompt}`)
         .then((res) => {
-          setResults(res.data.result);
+          setResult(res.data.result[0]);
           setLoading(false);
         })
         .catch((err) => {
@@ -56,7 +55,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Create images with <span className={styles.titleColor}>DALL-E 2</span>
+          Create images with <span className={styles.titleColor}>DALL-E 3</span>
         </h1>
         <p className={styles.description}>
           <input
@@ -66,23 +65,14 @@ export default function Home() {
             onChange={(e) => setToken(e.target.value)}
             placeholder="Bearer Token (sk-...)"
           />
-          <input
+          <textarea
             id="prompt"
             type="text"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Prompt"
           />
-          <input
-            id="number"
-            type="number"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder="Number of images"
-            max="10"
-          />
-          {"  "}
-          <button onClick={getImages}>Get {number} Images</button>
+          <button onClick={getImages}>Get Image</button>
         </p>
         <small>
           Download as:{" "}
@@ -96,25 +86,24 @@ export default function Home() {
             <option value="jpg">Jpg</option>
             <option value="gif">Gif</option>
             <option value="avif">Avif</option>
-          </select>
-          {" "}
+          </select>{" "}
           Click the image below and save.
         </small>
         <br />
-        {error ? ( <div className={styles.error}>Something went wrong. Try again.</div> ) : ( <></> )}
+        {error ? (
+          <div className={styles.error}>Something went wrong. Try again.</div>
+        ) : (
+          <></>
+        )}
         {loading && <p>Loading...</p>}
         <div className={styles.grid}>
-          {results.map((result) => {
-            return (
-              <div className={styles.card}>
-                <img
-                  className={styles.imgPreview}
-                  src={result.url}
-                  onClick={() => download(result.url)}
-                />
-              </div>
-            );
-          })}
+          <div className={styles.card}>
+            <img
+              className={styles.imgPreview}
+              src={result?.url}
+              onClick={() => download(result.url)}
+            />
+          </div>
         </div>
       </main>
     </div>
