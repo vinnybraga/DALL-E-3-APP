@@ -75,7 +75,7 @@ export default function Home() {
           <button onClick={getImages}>Get Image</button>
         </p>
         <small>
-          Download as:{" "}
+          Download as:
           <select
             id="type"
             value={type}
